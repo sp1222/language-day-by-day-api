@@ -1,0 +1,22 @@
+# docker-compose.yml
+# Used to spin up a test instance of the recipe book database.
+
+version: '3.8'
+
+services:
+  language_db:
+    container_name: language_db
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: test
+      SALT: test
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./language_db:/var/lib/postgresql/data
+
+volumes:
+  db:
+    driver: local
