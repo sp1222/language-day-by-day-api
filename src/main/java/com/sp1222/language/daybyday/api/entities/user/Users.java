@@ -1,4 +1,4 @@
-package com.sp1222.language.daybyday.api.entities;
+package com.sp1222.language.daybyday.api.entities.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -53,7 +53,10 @@ public class Users {
     @Email(message = "Invalid email format", regexp = "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-za-z]{2,3}")
     private String email;
 
+    /**
+     * Hashed password.
+     */
     @Column(name = "hashed", nullable = false)
-    @NotBlank(message = "This value cannot be empty")
+    @NotBlank(message = "Value must not be null")
     private String hashed;
 }
