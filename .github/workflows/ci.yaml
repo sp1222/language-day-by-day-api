@@ -14,6 +14,7 @@ jobs:
         with:
           java-version: 17
           cache: 'gradle'
+          distribution: 'temurin'
       - name: Cache Gradle packages
         uses: actions/cache@v3
         with:
@@ -35,6 +36,7 @@ jobs:
         with:
           java-version: 17
           cache: 'gradle'
+          distribution: 'temurin'
       - name: Cache Gradle packages
         uses: actions/cache@v3
         with:
