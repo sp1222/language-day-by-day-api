@@ -1,6 +1,5 @@
 package com.sp1222.language.daybyday.api.repositories
 
-import com.sp1222.language.daybyday.api.entities.user.BaseUser
 import com.sp1222.language.daybyday.api.entities.user.UserInsensitive
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
@@ -9,6 +8,7 @@ import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
+import spock.lang.Unroll
 
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -92,5 +92,35 @@ class UserInsensitiveRepositorySpec extends Specification {
 
         then:
         result == null
+    }
+
+    @DirtiesContext
+    @Unroll
+    def 'Determine if user exists by ID'() {
+        when:
+        def result = userInsensitiveRepository.existsById(id)
+
+        then:
+        result == expected
+
+        where:
+        id | expected
+        1  | true
+        99 | false
+    }
+
+    @DirtiesContext
+    @Unroll
+    def 'Determine if user exists by username'() {
+        when:
+        def result = userInsensitiveRepository.existsByUsername(username)
+
+        then:
+        result == expected
+
+        where:
+        username  | expected
+        "user1"   | true
+        "defunct" | false
     }
 }
