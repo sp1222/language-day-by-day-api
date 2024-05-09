@@ -6,5 +6,6 @@ CREATE TABLE users(
     firstname       VARCHAR(50),
     username        VARCHAR(50),
     email           VARCHAR(100),
-    hashed          VARCHAR(256)
+    hashed          VARCHAR(256),
+    salt            VARCHAR(256)
 );

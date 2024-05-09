@@ -19,9 +19,9 @@ class UserConfidentialSpec extends Specification {
     UserConfidentialRepository userConfidentialRepository
 
     def setup() {
-        def existingUser = new UserConfidential(username: "user1", hashed: "hashed1")
+        def existingUser = new UserConfidential(username: "user1", hashed: "hashed1", salt: "salt1")
         userConfidentialRepository.save(existingUser)
-        existingUser = new UserConfidential(username: "user2", hashed: "hashed2")
+        existingUser = new UserConfidential(username: "user2", hashed: "hashed2", salt: "salt2")
         userConfidentialRepository.save(existingUser)
     }
 
@@ -38,6 +38,7 @@ class UserConfidentialSpec extends Specification {
         user.id == 1
         user.username == "user1"
         user.hashed == "hashed1"
+        user.salt == "salt1"
     }
 
     @DirtiesContext
@@ -58,6 +59,7 @@ class UserConfidentialSpec extends Specification {
         user.id == 1
         user.username == "user1"
         user.hashed == "hashed1"
+        user.salt == "salt1"
     }
 
     @DirtiesContext
@@ -72,7 +74,7 @@ class UserConfidentialSpec extends Specification {
     @DirtiesContext
     def 'Create a new User'() {
         setup:
-        def newUser = new UserConfidential(username: "user3", hashed: "hashed3")
+        def newUser = new UserConfidential(username: "user3", hashed: "hashed3", salt: "salt3")
 
         when:
         def user = userConfidentialRepository.save(newUser)
@@ -81,6 +83,7 @@ class UserConfidentialSpec extends Specification {
         user.id == 3
         user.username == newUser.username
         user.hashed == newUser.hashed
+        user.salt == newUser.salt
     }
 
     @DirtiesContext

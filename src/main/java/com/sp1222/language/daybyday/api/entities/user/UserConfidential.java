@@ -25,4 +25,8 @@ public class UserConfidential extends BaseUser {
     @Column(name = "hashed", nullable = false)
     @NotBlank(message = "hashed must contain a value")
     private String hashed;
+
+    @Column(name = "salt", nullable = false)
+    @NotBlank(message = "salt must contain a value")
+    private String salt;
 }
