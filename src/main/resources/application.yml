@@ -5,3 +5,9 @@ spring:
     password: ${POSTGRES_PASSWORD}
 server:
   port: ${PORT}
+argon2:
+  salt-length: ${ARGON2_SALT_LENGTH:4}
+  hash-length: ${ARGON2_HASH_LENGTH:64}
+  parallelism: ${ARGON2_PARALLELISM:1}
+  memory: ${ARGON2_MEMORY:32768}
+  iterations: ${ARGON2_ITERATIONS:4}

@@ -1,5 +1,6 @@
 package com.sp1222.language.daybyday.api.service;
 
+import com.sp1222.language.daybyday.api.configurations.Argon2Config;
 import com.sp1222.language.daybyday.api.dto.UserDto;
 import com.sp1222.language.daybyday.api.entities.user.UserConfidential;
 import com.sp1222.language.daybyday.api.entities.user.UserInsensitive;
@@ -10,13 +11,13 @@ import com.sp1222.language.daybyday.api.repositories.UserConfidentialRepository;
 import com.sp1222.language.daybyday.api.repositories.UserInsensitiveRepository;
 import com.sp1222.language.daybyday.api.repositories.UserSensitiveRepository;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
+
 @Service
+@AllArgsConstructor
 public class UserService {
 
     /**
@@ -34,25 +35,7 @@ public class UserService {
      */
     UserConfidentialRepository userConfidentialRepository;
 
-    Argon2PasswordEncoder argon2PasswordEncoder;
-
-    private int saltLength;
-
-    public UserService(UserInsensitiveRepository userInsensitiveRepository,
-                       UserSensitiveRepository userSensitiveRepository,
-                       UserConfidentialRepository userConfidentialRepository,
-                       Environment environment ) {
-        this.userInsensitiveRepository = userInsensitiveRepository;
-        this.userSensitiveRepository = userSensitiveRepository;
-        this.userConfidentialRepository = userConfidentialRepository;
-
-        this.saltLength = Integer.parseInt(environment.getProperty("argon2.salt-length", "12"));
-        int hashLength = Integer.parseInt(environment.getProperty("argon2.hash-length", "128"));
-        int parallelism = Integer.parseInt(environment.getProperty("argon2.parallelism", "1"));
-        int memory = Integer.parseInt(environment.getProperty("argon2.memory", "60000"));
-        int iterations = Integer.parseInt(environment.getProperty("argon2.iterations", "8"));
-        argon2PasswordEncoder = new Argon2PasswordEncoder(this.saltLength,hashLength,parallelism,memory,iterations);
-    }
+    Argon2Config argon2Config;
 
     public UserDto createUser(UserDto newUser) {
         if (userInsensitiveRepository.existsByUsername(newUser.username)) {
@@ -84,10 +67,9 @@ public class UserService {
             throw new NotFoundByUsernameException(userDto.username);
         }
         UserConfidential userConfidential = userConfidentialRepository.findByUsername(userDto.username);
-        if (userConfidential.getSalt().isEmpty()) {
+        if (userConfidential.getSalt().isBlank()) {
             userConfidential.setSalt(initSalt());
         }
-        // TODO: consider transmitting password safely from front to back ends
         userConfidential.setHashed(toHash(userDto.password.concat(userConfidential.getSalt())));
         try {
             userConfidentialRepository.save(userConfidential);
@@ -99,12 +81,19 @@ public class UserService {
     }
 
     private String initSalt() {
-        // TODO: return random characters of length this.saltLength
-        return "implement me";
+        SecureRandom secureRandom = new SecureRandom();
+        StringBuilder stringBuilder = new StringBuilder(argon2Config.getSaltLength());
+        for (int i = 0; i < argon2Config.getSaltLength(); i++) {
+            int randomInt = secureRandom.nextInt(62); // range 0-61 for alphanumeric characters
+            char randomChar = randomInt < 26 ? (char) ('a' + randomInt) : (char) ('A' + randomInt - 26);
+            stringBuilder.append(randomChar);
+        }
+        return stringBuilder.toString();
     }
 
     private String toHash(String hashing) {
-        return argon2PasswordEncoder.encode(hashing);
+        Argon2PasswordEncoder encoder = argon2Config.getPasswordEncoder();
+        return encoder.encode(hashing);
     }
 
     public UserDto updateUserFirstname() {
