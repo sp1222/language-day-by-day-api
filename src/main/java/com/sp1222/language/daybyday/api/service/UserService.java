@@ -11,7 +11,6 @@ import com.sp1222.language.daybyday.api.repositories.UserConfidentialRepository;
 import com.sp1222.language.daybyday.api.repositories.UserInsensitiveRepository;
 import com.sp1222.language.daybyday.api.repositories.UserSensitiveRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -111,8 +110,7 @@ public class UserService {
      * @return          Hashed string.
      */
     private String toHash(String hashing) {
-        Argon2PasswordEncoder encoder = passwordEncoderConfig.getPasswordEncoder();
-        return encoder.encode(hashing);
+        return passwordEncoderConfig.getHashedPassword(hashing);
     }
 
     public UserDto updateUserFirstname() {

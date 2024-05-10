@@ -49,7 +49,7 @@ public class PasswordEncoderConfig {
      *
      * @return      Defined Argon2PasswordEncoder object.
      */
-    public Argon2PasswordEncoder getPasswordEncoder() {
+    private Argon2PasswordEncoder getPasswordEncoder() {
         int saltLength = getPropertyAsInt("argon2.salt-length", SALT_LENGTH_DEFAULT);
         int hashLength = getPropertyAsInt("argon2.hash-length", HASH_LENGTH_DEFAULT);
         int parallelism = getPropertyAsInt("argon2.parallelism", PARALLELISM_DEFAULT);
@@ -73,6 +73,11 @@ public class PasswordEncoderConfig {
             stringBuilder.append(randomChar);
         }
         return stringBuilder.toString();
+    }
+
+    public String getHashedPassword(String hashing) {
+        Argon2PasswordEncoder encoder = getPasswordEncoder();
+        return encoder.encode(hashing);
     }
 
     /**
