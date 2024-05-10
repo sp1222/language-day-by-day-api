@@ -1,6 +1,6 @@
 package com.sp1222.language.daybyday.api.service;
 
-import com.sp1222.language.daybyday.api.configurations.Argon2Config;
+import com.sp1222.language.daybyday.api.configurations.PasswordEncoderConfig;
 import com.sp1222.language.daybyday.api.dto.UserDto;
 import com.sp1222.language.daybyday.api.entities.user.UserConfidential;
 import com.sp1222.language.daybyday.api.entities.user.UserInsensitive;
@@ -13,8 +13,6 @@ import com.sp1222.language.daybyday.api.repositories.UserSensitiveRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.security.SecureRandom;
 
 @Service
 @AllArgsConstructor
@@ -38,7 +36,7 @@ public class UserService {
     /**
      * Configuration for Argon2 encoding.
      */
-    Argon2Config argon2Config;
+    PasswordEncoderConfig passwordEncoderConfig;
 
     /**
      * Create a new user given properties within a UserDto.
@@ -98,19 +96,12 @@ public class UserService {
     }
 
     /**
-     * Creates a salt for a user to hash passwords by.
+     * Retrieves a salt value from the PasswordEncoderConfig.
      *
-     * @return      A SecureRandom generated salt value.
+     * @return      A generated salt value.
      */
     private String initSalt() {
-        SecureRandom secureRandom = new SecureRandom();
-        StringBuilder stringBuilder = new StringBuilder(argon2Config.getSaltLength());
-        for (int i = 0; i < argon2Config.getSaltLength(); i++) {
-            int randomInt = secureRandom.nextInt(62); // range 0-61 for alphanumeric characters
-            char randomChar = randomInt < 26 ? (char) ('a' + randomInt) : (char) ('A' + randomInt - 26);
-            stringBuilder.append(randomChar);
-        }
-        return stringBuilder.toString();
+        return passwordEncoderConfig.getSalt();
     }
 
     /**
@@ -120,7 +111,7 @@ public class UserService {
      * @return          Hashed string.
      */
     private String toHash(String hashing) {
-        Argon2PasswordEncoder encoder = argon2Config.getPasswordEncoder();
+        Argon2PasswordEncoder encoder = passwordEncoderConfig.getPasswordEncoder();
         return encoder.encode(hashing);
     }
 
