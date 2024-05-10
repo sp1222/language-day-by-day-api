@@ -104,16 +104,12 @@ public class UserService {
     }
 
     /**
-     * Hashes a string with Argon2PasswordEncoder.
+     * Hashes a string.
      *
      * @param hashing   String being hashed.
      * @return          Hashed string.
      */
     private String toHash(String hashing) {
         return passwordEncoderConfig.getHashedPassword(hashing);
-    }
-
-    public UserDto updateUserFirstname() {
-        return null;
     }
 }
