@@ -35,8 +35,18 @@ public class UserService {
      */
     UserConfidentialRepository userConfidentialRepository;
 
+    /**
+     * Configuration for Argon2 encoding.
+     */
     Argon2Config argon2Config;
 
+    /**
+     * Create a new user given properties within a UserDto.
+     * Initial user creation expects UserInsensitive and UserSensitive data.
+     *
+     * @param newUser   UserDto containing properties to create a new user by.
+     * @return          A valid UserDto with an ID or invalid if ID is null.
+     */
     public UserDto createUser(UserDto newUser) {
         if (userInsensitiveRepository.existsByUsername(newUser.username)) {
             throw new DuplicatePropertyException(newUser.username);
@@ -62,6 +72,13 @@ public class UserService {
         return newUser;
     }
 
+    /**
+     * Sets a password for an existing user.
+     * Expected to be done after a new user is created.
+     *
+     * @param userDto   UserDto containing properties to set a user's password.
+     * @return          Boolean representing if a user's password was successfully created or not.
+     */
     public boolean setUserPassword(UserDto userDto) {
         if (!userConfidentialRepository.existsByUsername(userDto.username)) {
             throw new NotFoundByUsernameException(userDto.username);
@@ -80,6 +97,11 @@ public class UserService {
         return true;
     }
 
+    /**
+     * Creates a salt for a user to hash passwords by.
+     *
+     * @return      A SecureRandom generated salt value.
+     */
     private String initSalt() {
         SecureRandom secureRandom = new SecureRandom();
         StringBuilder stringBuilder = new StringBuilder(argon2Config.getSaltLength());
@@ -91,6 +113,12 @@ public class UserService {
         return stringBuilder.toString();
     }
 
+    /**
+     * Hashes a string with Argon2PasswordEncoder.
+     *
+     * @param hashing   String being hashed.
+     * @return          Hashed string.
+     */
     private String toHash(String hashing) {
         Argon2PasswordEncoder encoder = argon2Config.getPasswordEncoder();
         return encoder.encode(hashing);
