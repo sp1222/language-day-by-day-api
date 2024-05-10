@@ -25,31 +25,16 @@ public class PasswordEncoderConfig {
     private final String SALT_LENGTH_DEFAULT = "4";
 
     /**
-     * Default hash length.
-     */
-    private final String HASH_LENGTH_DEFAULT = "64";
-
-    /**
-     * Default parallelism value.
-     */
-    private final String PARALLELISM_DEFAULT = "1";
-
-    /**
-     * Default memory value.
-     */
-    private final String MEMORY_DEFAULT = "32768";
-
-    /**
-     * Default iterations value
-     */
-    private final String ITERATIONS_DEFAULT = "8";
-
-    /**
      * Configures an Argon2PasswordEncoder using environment variables or a default value if one is not set.
      *
      * @return      Defined Argon2PasswordEncoder object.
      */
     private Argon2PasswordEncoder getPasswordEncoder() {
+        final String HASH_LENGTH_DEFAULT = "64";
+        final String PARALLELISM_DEFAULT = "1";
+        final String MEMORY_DEFAULT = "32768";
+        final String ITERATIONS_DEFAULT = "8";
+
         int saltLength = getPropertyAsInt("argon2.salt-length", SALT_LENGTH_DEFAULT);
         int hashLength = getPropertyAsInt("argon2.hash-length", HASH_LENGTH_DEFAULT);
         int parallelism = getPropertyAsInt("argon2.parallelism", PARALLELISM_DEFAULT);
