@@ -24,13 +24,14 @@ public class PasswordEncoderConfig {
      */
     private final String SALT_LENGTH_DEFAULT = "4";
 
+    private final String HASH_LENGTH_DEFAULT = "64";
+
     /**
      * Configures an Argon2PasswordEncoder using environment variables or a default value if one is not set.
      *
      * @return      Defined Argon2PasswordEncoder object.
      */
     private Argon2PasswordEncoder getPasswordEncoder() {
-        final String HASH_LENGTH_DEFAULT = "64";
         final String PARALLELISM_DEFAULT = "1";
         final String MEMORY_DEFAULT = "32768";
         final String ITERATIONS_DEFAULT = "8";
@@ -40,7 +41,9 @@ public class PasswordEncoderConfig {
         int parallelism = getPropertyAsInt("argon2.parallelism", PARALLELISM_DEFAULT);
         int memory = getPropertyAsInt("argon2.memory", MEMORY_DEFAULT);
         int iterations = getPropertyAsInt("argon2.iterations", ITERATIONS_DEFAULT);
-        return new Argon2PasswordEncoder(saltLength, hashLength, parallelism, memory, iterations);
+//        return new Argon2PasswordEncoder(saltLength, hashLength, parallelism, memory, iterations);
+        Argon2PasswordEncoder test = new Argon2PasswordEncoder(saltLength, hashLength, parallelism, memory, iterations);
+        return test;
     }
 
     /**
@@ -49,12 +52,13 @@ public class PasswordEncoderConfig {
      * @return      Generated string value for salting passwords.
      */
     public String getSalt() {
+        final String allowed = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         int saltLength = getPropertyAsInt("argon2.salt-length", SALT_LENGTH_DEFAULT);
         SecureRandom secureRandom = new SecureRandom();
         StringBuilder stringBuilder = new StringBuilder(saltLength);
         for (int i = 0; i < saltLength; i++) {
-            int randomInt = secureRandom.nextInt(62); // range 0-61 for alphanumeric characters
-            char randomChar = randomInt < 26 ? (char) ('a' + randomInt) : (char) ('A' + randomInt - 26);
+            int randomInt = secureRandom.nextInt(allowed.length());
+            char randomChar = allowed.charAt(randomInt);
             stringBuilder.append(randomChar);
         }
         return stringBuilder.toString();
@@ -73,6 +77,16 @@ public class PasswordEncoderConfig {
      * @return                  Non-null integer value.
      */
     private int getPropertyAsInt(String property, String defaultValue) {
-        return Integer.parseInt(environment.getProperty(property, defaultValue));
+        String propertyValue = environment.getProperty(property);
+        if (propertyValue == null) {
+            return Integer.parseInt(defaultValue);
+        }
+        return Integer.parseInt(propertyValue);
     }
+
+    public String getSaltLengthDefault() {
+        return SALT_LENGTH_DEFAULT;
+    }
+
+    public String getHashLengthDefault() { return HASH_LENGTH_DEFAULT; }
 }

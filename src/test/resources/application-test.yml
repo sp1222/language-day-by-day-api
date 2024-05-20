@@ -1,3 +1,9 @@
 spring:
   datasource:
     url: jdbc:tc:postgresql:14.9:///
+argon2:
+  salt-length: ${ARGON2_SALT_LENGTH}
+  hash-length: ${ARGON2_HASH_LENGTH}
+  parallelism: ${ARGON2_PARALLELISM}
+  memory: ${ARGON2_MEMORY}
+  iterations: ${ARGON2_ITERATIONS}

@@ -6,12 +6,23 @@ import com.sp1222.language.daybyday.api.entities.user.UserConfidential;
 import com.sp1222.language.daybyday.api.entities.user.UserInsensitive;
 import com.sp1222.language.daybyday.api.entities.user.UserSensitive;
 import com.sp1222.language.daybyday.api.exceptions.DuplicatePropertyException;
+import com.sp1222.language.daybyday.api.exceptions.NotFoundByIdException;
 import com.sp1222.language.daybyday.api.exceptions.NotFoundByUsernameException;
 import com.sp1222.language.daybyday.api.repositories.UserConfidentialRepository;
 import com.sp1222.language.daybyday.api.repositories.UserInsensitiveRepository;
 import com.sp1222.language.daybyday.api.repositories.UserSensitiveRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+// TODO
+//  create user - done
+//  set user password - done
+//  salting - done
+//  hashing - wip
+//  update firstname?
+//  update email?
+//  JWT
+//  handling exceptions
 
 @Service
 @AllArgsConstructor
@@ -76,7 +87,7 @@ public class UserService {
      * @param userDto   UserDto containing properties to set a user's password.
      * @return          Boolean representing if a user's password was successfully created or not.
      */
-    public boolean setUserPassword(UserDto userDto) {
+    public boolean setPassword(UserDto userDto) {
         if (!userConfidentialRepository.existsByUsername(userDto.username)) {
             throw new NotFoundByUsernameException(userDto.username);
         }
@@ -90,6 +101,25 @@ public class UserService {
         } catch (Exception e) {
             // TODO
             return false;
+        }
+        return true;
+    }
+
+    /**
+     *
+     * @param userDto
+     * @return
+     */
+    public boolean setFirstName(UserDto userDto) {
+        if (!userInsensitiveRepository.existsById(userDto.id)) {
+            throw new NotFoundByIdException(userDto.id);
+        }
+        UserInsensitive userInsensitive = userInsensitiveRepository.findById(userDto.id).orElseThrow();
+        userInsensitive.setFirstname(userDto.firstname);
+        try {
+            userInsensitiveRepository.save(userInsensitive);
+        } catch (Exception e) {
+            // TODO
         }
         return true;
     }
