@@ -24,6 +24,9 @@ public class PasswordEncoderConfig {
      */
     private final String SALT_LENGTH_DEFAULT = "4";
 
+    /**
+     * Default hash length.
+     */
     private final String HASH_LENGTH_DEFAULT = "64";
 
     /**
@@ -34,16 +37,14 @@ public class PasswordEncoderConfig {
     private Argon2PasswordEncoder getPasswordEncoder() {
         final String PARALLELISM_DEFAULT = "1";
         final String MEMORY_DEFAULT = "32768";
-        final String ITERATIONS_DEFAULT = "8";
+        final String ITERATIONS_DEFAULT = "4";
 
         int saltLength = getPropertyAsInt("argon2.salt-length", SALT_LENGTH_DEFAULT);
         int hashLength = getPropertyAsInt("argon2.hash-length", HASH_LENGTH_DEFAULT);
         int parallelism = getPropertyAsInt("argon2.parallelism", PARALLELISM_DEFAULT);
         int memory = getPropertyAsInt("argon2.memory", MEMORY_DEFAULT);
         int iterations = getPropertyAsInt("argon2.iterations", ITERATIONS_DEFAULT);
-//        return new Argon2PasswordEncoder(saltLength, hashLength, parallelism, memory, iterations);
-        Argon2PasswordEncoder test = new Argon2PasswordEncoder(saltLength, hashLength, parallelism, memory, iterations);
-        return test;
+        return new Argon2PasswordEncoder(saltLength, hashLength, parallelism, memory, iterations);
     }
 
     /**
@@ -77,11 +78,9 @@ public class PasswordEncoderConfig {
      * @return                  Non-null integer value.
      */
     private int getPropertyAsInt(String property, String defaultValue) {
-        String propertyValue = environment.getProperty(property);
-        if (propertyValue == null) {
-            return Integer.parseInt(defaultValue);
-        }
-        return Integer.parseInt(propertyValue);
+        String intValue = environment.getProperty(property) != null ? environment.getProperty(property) : defaultValue;
+        assert intValue != null;
+        return Integer.parseInt(intValue);
     }
 
     public String getSaltLengthDefault() {
