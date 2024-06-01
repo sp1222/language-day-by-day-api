@@ -88,4 +88,6 @@ class UserServiceSpec extends Specification {
         then:
         thrown(DuplicatePropertyException)
     }
+
+    // TODO setPassword, setFirstName
 }
