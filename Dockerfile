@@ -1,4 +1,4 @@
-FROM gradle:7.5.1-jdk17 AS builder
+FROM gradle:7.6.4-jdk17 AS builder
 WORKDIR /app
 COPY . .
 RUN gradle clean build
