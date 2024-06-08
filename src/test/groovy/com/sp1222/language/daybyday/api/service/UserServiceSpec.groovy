@@ -2,6 +2,7 @@ package com.sp1222.language.daybyday.api.service
 
 import com.sp1222.language.daybyday.api.configurations.PasswordEncoderConfig
 import com.sp1222.language.daybyday.api.dto.UserDto
+import com.sp1222.language.daybyday.api.entities.user.UserConfidential
 import com.sp1222.language.daybyday.api.entities.user.UserInsensitive
 import com.sp1222.language.daybyday.api.entities.user.UserSensitive
 import com.sp1222.language.daybyday.api.exceptions.DuplicatePropertyException
@@ -19,7 +20,6 @@ class UserServiceSpec extends Specification {
     UserService userService
 
     def setup() {
-
         userInsensitiveRepository = Mock(UserInsensitiveRepository)
         userSensitiveRepository = Mock(UserSensitiveRepository)
         userConfidentialRepository = Mock(UserConfidentialRepository)
@@ -89,5 +89,45 @@ class UserServiceSpec extends Specification {
         thrown(DuplicatePropertyException)
     }
 
-    // TODO setPassword, setFirstName
+    def 'Set first name happy path'() {
+        setup:
+        def id = 1
+        def firstname = "firstname"
+        def newFirstname = "newfirstname"
+        userInsensitiveRepository.existsById(id) >> true
+        userInsensitiveRepository.findById(id) >> new UserInsensitive(id: id, firstname: firstname)
+        userInsensitiveRepository.save(_ as UserInsensitive) >> new UserInsensitive(id: id, firstname: firstname)
+
+        when:
+        def userDto = UserDto.builder()
+                .id(id)
+                .firstname(newFirstname)
+                .build()
+        def result = userService.setFirstName(userDto)
+
+        then:
+        result == true
+    }
+
+    def 'Set password happy path'() {
+        setup:
+        def id = 1
+        def username = "username"
+        def hashed = "hashed"
+        def newHashed = "newHashed"
+        def salt = "salt"
+        userConfidentialRepository.existsByUsername(username) >> true
+        userConfidentialRepository.findByUsername(_ as String) >> new UserConfidential(id: id, username: username, salt: salt, hashed: hashed)
+        userConfidentialRepository.save(_ as UserConfidential) >> new UserConfidential(id: id, username: username, salt: salt, hashed: newHashed)
+
+        when:
+        def userDto = UserDto.builder()
+            .username(username)
+            .password(newHashed)
+            .build()
+        def result = userService.setPassword(userDto)
+
+        then:
+        result
+    }
 }

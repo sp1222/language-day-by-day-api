@@ -92,7 +92,7 @@ public class UserService {
             throw new NotFoundByUsernameException(userDto.username);
         }
         UserConfidential userConfidential = userConfidentialRepository.findByUsername(userDto.username);
-        if (userConfidential.getSalt().isBlank()) {
+        if (userConfidential.getSalt() == null || userConfidential.getSalt().isBlank()) {
             userConfidential.setSalt(initSalt());
         }
         userConfidential.setHashed(toHash(userDto.password.concat(userConfidential.getSalt())));
@@ -114,7 +114,7 @@ public class UserService {
         if (!userInsensitiveRepository.existsById(userDto.id)) {
             throw new NotFoundByIdException(userDto.id);
         }
-        UserInsensitive userInsensitive = userInsensitiveRepository.findById(userDto.id).orElseThrow();
+        UserInsensitive userInsensitive = userInsensitiveRepository.findById(userDto.id);
         userInsensitive.setFirstname(userDto.firstname);
         try {
             userInsensitiveRepository.save(userInsensitive);
