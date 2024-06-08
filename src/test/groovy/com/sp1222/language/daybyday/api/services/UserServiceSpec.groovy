@@ -1,4 +1,4 @@
-package com.sp1222.language.daybyday.api.service
+package com.sp1222.language.daybyday.api.services
 
 import com.sp1222.language.daybyday.api.configurations.PasswordEncoderConfig
 import com.sp1222.language.daybyday.api.dto.UserDto
