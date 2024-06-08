@@ -48,6 +48,20 @@ public class UserService {
      */
     PasswordEncoderConfig passwordEncoderConfig;
 
+
+
+    public UserDto getUserByUsername(String username) {
+        if (!userInsensitiveRepository.existsByUsername(username)) {
+            throw new NotFoundByUsernameException(username);
+        }
+        UserInsensitive userInsensitive = userInsensitiveRepository.findByUsername(username);
+        return UserDto.builder()
+                .id(userInsensitive.getId())
+                .username(userInsensitive.getUsername())
+                .firstname(userInsensitive.getFirstname())
+                .build();
+    }
+
     /**
      * Create a new user given properties within a UserDto.
      * Initial user creation expects UserInsensitive and UserSensitive data.
