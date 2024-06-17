@@ -17,6 +17,8 @@ public class UserController {
 
     public ResponseEntity<UserDto> getUser(UserDto user) {
         // TODO: authenticate user
+        // TODO: look into transmitting user credentials securely
+        // TODO: look into providing a session key or equivalent.
         return null;
     }
 

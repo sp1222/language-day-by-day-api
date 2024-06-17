@@ -48,7 +48,15 @@ public class UserService {
      */
     PasswordEncoderConfig passwordEncoderConfig;
 
+    public boolean isAuthenticated(String username, String password) {
+        if (!userConfidentialRepository.existsByUsername(username)) {
+            throw new NotFoundByUsernameException(username);
+        }
 
+
+
+        return true;
+    }
 
     public UserDto getUserByUsername(String username) {
         if (!userInsensitiveRepository.existsByUsername(username)) {
@@ -107,6 +115,7 @@ public class UserService {
         }
         UserConfidential userConfidential = userConfidentialRepository.findByUsername(userDto.username);
         if (userConfidential.getSalt() == null || userConfidential.getSalt().isBlank()) {
+            // This should only be done when user is creating an account and setting password for the first time.
             userConfidential.setSalt(initSalt());
         }
         userConfidential.setHashed(toHash(userDto.password.concat(userConfidential.getSalt())));
