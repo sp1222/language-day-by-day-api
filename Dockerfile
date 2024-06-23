@@ -3,7 +3,7 @@ WORKDIR /app
 COPY . .
 RUN gradle clean build
 
-FROM openjdk:23-slim
+FROM openjdk:24-slim
 
 COPY --from=builder /app/build/libs/*.jar /app/lib/
 
