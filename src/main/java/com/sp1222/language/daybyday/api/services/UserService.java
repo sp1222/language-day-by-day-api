@@ -12,13 +12,14 @@ import com.sp1222.language.daybyday.api.repositories.UserConfidentialRepository;
 import com.sp1222.language.daybyday.api.repositories.UserInsensitiveRepository;
 import com.sp1222.language.daybyday.api.repositories.UserSensitiveRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 // TODO
-//  create user - done
-//  set user password - done
-//  salting - done
-//  hashing - wip
 //  update firstname?
 //  update email?
 //  JWT
@@ -26,7 +27,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class UserService {
+public class UserService implements UserDetailsService {
 
     /**
      * Repository to user insensitive data.
@@ -48,17 +49,7 @@ public class UserService {
      */
     PasswordEncoderConfig passwordEncoderConfig;
 
-    public boolean isAuthenticated(String username, String password) {
-        if (!userConfidentialRepository.existsByUsername(username)) {
-            throw new NotFoundByUsernameException(username);
-        }
-
-
-
-        return true;
-    }
-
-    public UserDto getUserByUsername(String username) {
+    public UserDto getUser(String username) {
         if (!userInsensitiveRepository.existsByUsername(username)) {
             throw new NotFoundByUsernameException(username);
         }
@@ -164,5 +155,14 @@ public class UserService {
      */
     private String toHash(String hashing) {
         return passwordEncoderConfig.getHashedPassword(hashing);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws NotFoundByUsernameException {
+        if (!userConfidentialRepository.existsByUsername(username)) {
+            throw new NotFoundByUsernameException(username);
+        }
+        UserConfidential user = userConfidentialRepository.findByUsername(username);
+        return new User(user.getUsername(), user.getHashed(), new ArrayList<>());
     }
 }
