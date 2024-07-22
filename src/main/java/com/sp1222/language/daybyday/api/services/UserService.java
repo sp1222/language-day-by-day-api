@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 
 // TODO
+//  authentication
 //  update firstname?
 //  update email?
 //  JWT
@@ -27,7 +28,8 @@ import java.util.ArrayList;
 
 @Service
 @AllArgsConstructor
-public class UserService implements UserDetailsService {
+//public class UserService implements UserDetailsService {
+public class UserService {
 
     /**
      * Repository to user insensitive data.
@@ -157,12 +159,12 @@ public class UserService implements UserDetailsService {
         return passwordEncoderConfig.getHashedPassword(hashing);
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws NotFoundByUsernameException {
-        if (!userConfidentialRepository.existsByUsername(username)) {
-            throw new NotFoundByUsernameException(username);
-        }
-        UserConfidential user = userConfidentialRepository.findByUsername(username);
-        return new User(user.getUsername(), user.getHashed(), new ArrayList<>());
-    }
+//    @Override
+//    public UserDetails loadUserByUsername(String username) throws NotFoundByUsernameException {
+//        if (!userConfidentialRepository.existsByUsername(username)) {
+//            throw new NotFoundByUsernameException(username);
+//        }
+//        UserConfidential user = userConfidentialRepository.findByUsername(username);
+//        return new User(user.getUsername(), user.getHashed(), new ArrayList<>());
+//    }
 }

@@ -39,19 +39,14 @@ public class PasswordEncoderConfig {
         this.argon2PasswordEncoder = new Argon2PasswordEncoder(saltLength, hashLength, parallelism, memory, iterations);
     }
 
-//    /**
-//     * Configures an Argon2PasswordEncoder using environment variables or a default value if one is not set.
-//     *
-//     * @return      Defined Argon2PasswordEncoder object.
-//     */
-//    private Argon2PasswordEncoder getPasswordEncoder() {
-//        int saltLength = getPropertyAsInt("argon2.salt-length", SALT_LENGTH_DEFAULT);
-//        int hashLength = getPropertyAsInt("argon2.hash-length", HASH_LENGTH_DEFAULT);
-//        int parallelism = getPropertyAsInt("argon2.parallelism", PARALLELISM_DEFAULT);
-//        int memory = getPropertyAsInt("argon2.memory", MEMORY_DEFAULT);
-//        int iterations = getPropertyAsInt("argon2.iterations", ITERATIONS_DEFAULT);
-//        return new Argon2PasswordEncoder(saltLength, hashLength, parallelism, memory, iterations);
-//    }
+    /**
+     * Configures an Argon2PasswordEncoder using environment variables or a default value if one is not set.
+     *
+     * @return      Defined Argon2PasswordEncoder object.
+     */
+    private Argon2PasswordEncoder getPasswordEncoder() {
+        return this.argon2PasswordEncoder;
+    }
 
     /**
      * Generate a salt value for password hashing.
@@ -72,7 +67,6 @@ public class PasswordEncoderConfig {
     }
 
     public String getHashedPassword(String hashing) {
-//        Argon2PasswordEncoder encoder = getPasswordEncoder();
         return this.argon2PasswordEncoder.encode(hashing);
     }
 
